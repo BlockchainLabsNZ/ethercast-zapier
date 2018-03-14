@@ -30,23 +30,17 @@ const unsubscribeHook = (z, bundle) => {
 };
 
 const getExampleLogs = (z, bundle) => {
-  // // For the test poll, you should get some real data, to aid the setup process.
-  // const options = {
-  //   url: 'https://api.ethercast.io/subscriptions/sample',
-  //   method: 'POST',
-  //   params: {
-  //     style: bundle.inputData.style
-  //   }
-  // };
-
-  return Promise.resolve([
-    {
-      log: 'example'
+  // For the test poll, you should get some real data, to aid the setup process.
+  const options = {
+    url: 'https://api.ethercast.io/get-example-log',
+    method: 'POST',
+    params: {
+      address: bundle.inputData.address.split(',').map(s => s.trim())
     }
-  ]);
+  };
 
-  // return z.request(options)
-  //   .then((response) => JSON.parse(response.content));
+  return z.request(options)
+    .then((response) => ([ JSON.parse(response.content) ]));
 };
 
 
@@ -80,7 +74,7 @@ module.exports = {
         key: 'address',
         required: true,
         label: 'Contract Address',
-        helpText: 'The address of the contract for which to listen to logs'
+        helpText: 'A comma delimited list of contract addresses'
       }
     ],
 
