@@ -1,5 +1,4 @@
 const subscribeHook = (z, bundle) => {
-
   const options = {
     url: 'https://api.ethercast.io/subscriptions',
     method: 'POST',
@@ -11,6 +10,41 @@ const subscribeHook = (z, bundle) => {
 
   return z.request(options)
     .then((response) => response.json);
+};
+
+const unsubscribeHook = (z, bundle) => {
+  // bundle.subscribeData contains the parsed response JSON from the subscribe
+  // request made initially.
+  const hookId = bundle.subscribeData.id;
+
+  // You can build requests and our client will helpfully inject all the variables
+  // you need to complete. You can also register middleware to control this.
+  const options = {
+    url: `https://api.ethercast.io/subscriptions/${hookId}`,
+    method: 'DELETE'
+  };
+
+  // You may return a promise or a normal data structure from any perform method.
+  return z.request(options)
+    .then((response) => JSON.parse(response.content));
+};
+
+const getExampleLogs = (z, bundle) => {
+  // For the test poll, you should get some real data, to aid the setup process.
+  const options = {
+    url: 'https://api.ethercast.io/subscriptions/sample',
+    method: 'POST',
+    params: {
+      style: bundle.inputData.style
+    }
+  };
+
+  return Promise.resolve({
+    log: 'example'
+  });
+
+  // return z.request(options)
+  //   .then((response) => JSON.parse(response.content));
 };
 
 
@@ -25,13 +59,14 @@ module.exports = {
 
   // `display` controls the presentation in the Zapier Editor
   display: {
-    label: 'New Log Subscription',
-    description: 'Triggers when logs are emitted in a new block.'
+    label: 'Log Emitted',
+    description: 'Triggers when logs are emitted by a contract.'
   },
 
   // `operation` implements the API call used to fetch the data
   operation: {
     type: 'hook',
+
     inputFields: [
       {
         key: 'name',
@@ -46,11 +81,16 @@ module.exports = {
         helpText: 'The address of the contract for which to listen to logs'
       }
     ],
+
     outputFields: [
       { key: 'id', label: 'ID' }
     ],
+
     perform: parseIncomingLog,
+    performList: getExampleLogs,
+
     performSubscribe: subscribeHook,
+    performUnsubscribe: unsubscribeHook,
     sample: {
       transactionHash: '0x0'
     }
