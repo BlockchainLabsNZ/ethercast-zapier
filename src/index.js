@@ -1,5 +1,6 @@
 const logs = require('./triggers/logs');
 const transactions = require('./triggers/transactions');
+const subscription = require('./creates/subscription');
 
 const { authentication, addBearerHeader } = require('./authentication');
 
@@ -21,15 +22,17 @@ const App = {
 
   // If you want your trigger to show up, you better include it here!
   triggers: {
-    // logs,
-    // transactions
+    logs,
+    transactions
   },
 
   // If you want your searches to show up, you better include it here!
   searches: {},
 
   // If you want your creates to show up, you better include it here!
-  creates: {}
+  creates: {
+    subscription
+  }
 };
 
 // Finally, export the app.

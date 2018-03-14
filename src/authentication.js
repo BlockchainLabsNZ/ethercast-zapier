@@ -1,5 +1,6 @@
 const authentication = {
   type: 'oauth2',
+  connectionLabel: '{{user}} @ Ethercast',
 
   test: {
     url: 'https://api.ethercast.io/subscriptions'
@@ -38,9 +39,7 @@ const authentication = {
     scope: 'create:subscription,read:subscription,deactivate:subscription'
   },
   // If you need any fields upfront, put them here
-  fields: [
-
-  ]
+  fields: []
 };
 
 const addBearerHeader = (request, z, bundle) => {
