@@ -30,18 +30,20 @@ const unsubscribeHook = (z, bundle) => {
 };
 
 const getExampleLogs = (z, bundle) => {
-  // For the test poll, you should get some real data, to aid the setup process.
-  const options = {
-    url: 'https://api.ethercast.io/subscriptions/sample',
-    method: 'POST',
-    params: {
-      style: bundle.inputData.style
-    }
-  };
+  // // For the test poll, you should get some real data, to aid the setup process.
+  // const options = {
+  //   url: 'https://api.ethercast.io/subscriptions/sample',
+  //   method: 'POST',
+  //   params: {
+  //     style: bundle.inputData.style
+  //   }
+  // };
 
-  return Promise.resolve({
-    log: 'example'
-  });
+  return Promise.resolve([
+    {
+      log: 'example'
+    }
+  ]);
 
   // return z.request(options)
   //   .then((response) => JSON.parse(response.content));
