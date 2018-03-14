@@ -17,7 +17,7 @@ const authentication = {
         state: '{{bundle.inputData.state}}',
         redirect_uri: '{{bundle.inputData.redirect_uri}}',
         response_type: 'code',
-        scope: 'offline_access read:subscription create:subscription deactivate:subscription',
+        scope: 'openid offline_access read:subscription create:subscription deactivate:subscription',
         audience: 'https://api.ethercast.io'
       }
     },
