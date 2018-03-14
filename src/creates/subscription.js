@@ -1,10 +1,19 @@
 module.exports = {
   key: 'subscription',
+
   noun: 'Subscription',
-  display: { label: 'Create Subscription', description: 'Create a new transaction or log subscription' },
+
+  display: {
+    label: 'Create Subscription',
+    description: 'Create a new transaction or log subscription'
+  },
+
   operation: {
-    perform: {
-      url: 'https://api.ethercast.io/{{id}}'
+    perform: (z, bundle) => {
+      return z.request({
+        url: 'https://api.ethercast.io/subscriptions',
+        method: 'POST'
+      });
     },
     sample: {
       id: 'uuid'
