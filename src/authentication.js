@@ -1,6 +1,6 @@
 const authentication = {
   type: 'oauth2',
-  connectionLabel: '{{user}} @ Ethercast',
+  connectionLabel: 'Ethercast',
 
   test: {
     url: 'https://api.ethercast.io/subscriptions'
