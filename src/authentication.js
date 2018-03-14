@@ -16,7 +16,9 @@ const authentication = {
         client_id: '{{process.env.CLIENT_ID}}',
         state: '{{bundle.inputData.state}}',
         redirect_uri: '{{bundle.inputData.redirect_uri}}',
-        response_type: 'code'
+        response_type: 'code',
+        scope: 'offline_access read:subscription create:subscription deactivate:subscription',
+        audience: 'https://api.ethercast.io'
       }
     },
     // Zapier expects a response providing {access_token: 'abcd'}
@@ -24,6 +26,7 @@ const authentication = {
     getAccessToken: {
       method: 'POST',
       url: 'https://ethercast.auth0.com/oauth/token',
+      audience: 'https://api.ethercast.io',
       body: {
         code: '{{bundle.inputData.code}}',
         client_id: '{{process.env.CLIENT_ID}}',
@@ -34,9 +37,7 @@ const authentication = {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
-    },
-
-    scope: 'create:subscription,read:subscription,deactivate:subscription'
+    }
   },
   // If you need any fields upfront, put them here
   fields: []
@@ -44,7 +45,8 @@ const authentication = {
 
 const addBearerHeader = (request, z, bundle) => {
   if (bundle.authData && bundle.authData.access_token) {
-    request.headers.Authorization = `Bearer ${bundle.authData.access_token}`;
+    const { access_token } = bundle.authData;
+    request.headers.Authorization = `Bearer ${access_token}`;
   }
 
   return request;
