@@ -1,8 +1,10 @@
 const authentication = {
   type: 'oauth2',
+
   test: {
-    url: 'https://{{bundle.authData.subdomain}}.ethercast.io/subscriptions'
+    url: 'https://api.ethercast.io/subscriptions'
   },
+
   // you can provide additional fields for inclusion in authData
   oauth2Config: {
     // "authorizeUrl" could also be a function returning a string url
