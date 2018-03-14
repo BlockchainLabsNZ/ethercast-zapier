@@ -26,7 +26,6 @@ const authentication = {
     getAccessToken: {
       method: 'POST',
       url: 'https://ethercast.auth0.com/oauth/token',
-      audience: 'https://api.ethercast.io',
       body: {
         code: '{{bundle.inputData.code}}',
         client_id: '{{process.env.CLIENT_ID}}',
