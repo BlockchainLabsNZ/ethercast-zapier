@@ -21,17 +21,15 @@ const App = {
 
   // If you want your trigger to show up, you better include it here!
   triggers: {
-    mainnetLogs: logsTrigger('mainnet','https://api.ethercast.io'),
-    kovanLogs: logsTrigger('kovan','https://kovan.api.ethercast.io')
+    mainnetLogs: logsTrigger('mainnet', 'https://api.ethercast.io'),
+    kovanLogs: logsTrigger('kovan', 'https://kovan.api.ethercast.io')
   },
 
   // If you want your searches to show up, you better include it here!
   searches: {},
 
   // If you want your creates to show up, you better include it here!
-  creates: {
-    subscription
-  }
+  creates: {}
 };
 
 // Finally, export the app.
