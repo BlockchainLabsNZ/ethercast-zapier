@@ -5,10 +5,10 @@ module.exports = function logsTrigger(network, apiUrl) {
     const options = {
       url: `${apiUrl}/subscriptions`,
       method: 'POST',
-      body: {
+      body: z.JSON.stringify({
         name: bundle.inputFields.name,
         webhookUrl: bundle.targetUrl
-      }
+      })
     };
 
     return z.request(options)
@@ -29,27 +29,27 @@ module.exports = function logsTrigger(network, apiUrl) {
 
     // You may return a promise or a normal data structure from any perform method.
     return z.request(options)
-      .then((response) => JSON.parse(response.content));
+      .then((response) => response.json);
   };
 
   const getExampleLogs = (z, bundle) => {
     // For the test poll, you should get some real data, to aid the setup process.
-    const options = {
+    const options = z.JSON.stringify({
       url: `${apiUrl}/get-examples`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      params: {
+      body: z.JSON.stringify({
         type: 'log',
         filters: {
           address: bundle.inputData.address.split(',').map(s => s.trim())
         }
-      }
-    };
+      })
+    });
 
     return z.request(options)
-      .then((response) => ([ JSON.parse(response.content) ]));
+      .then((response) => ([ response.json ]));
   };
 
 
@@ -83,13 +83,31 @@ module.exports = function logsTrigger(network, apiUrl) {
           key: 'address',
           required: true,
           label: 'Contract Address',
-          helpText: 'A comma delimited list of contract addresses'
+          helpText: 'A comma delimited list of contract addresses to filter on'
         },
         {
           key: 'topic0',
           required: false,
           label: 'Log Event Signature',
-          helpText: 'This is the signature of the emitted log event'
+          helpText: 'A comma delimited list of event signatures to filter on'
+        },
+        {
+          key: 'topic1',
+          required: false,
+          label: 'First Argument',
+          helpText: 'A comma delimited list of first indexed arguments to filter on'
+        },
+        {
+          key: 'topic2',
+          required: false,
+          label: 'Second Argument',
+          helpText: 'A comma delimited list of second indexed arguments to filter on'
+        },
+        {
+          key: 'topic3',
+          required: false,
+          label: 'Third Argument',
+          helpText: 'A comma delimited list of third indexed arguments to filter on'
         }
       ],
 
