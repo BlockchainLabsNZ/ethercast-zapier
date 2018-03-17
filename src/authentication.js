@@ -36,8 +36,25 @@ const authentication = {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
-    }
+    },
+
+    refreshAccessToken: {
+      method: 'POST',
+      url: 'https://ethercast.auth0.com/oauth/token',
+      body: {
+        grant_type: 'refresh_token',
+        client_id: '{{process.env.CLIENT_ID}}',
+        client_secret: '{{process.env.CLIENT_SECRET}}',
+        refresh_token: '{{bundle.authData.refresh_token}}'
+      },
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    },
+
+    autoRefresh: true
   },
+
   // If you need any fields upfront, put them here
   fields: []
 };

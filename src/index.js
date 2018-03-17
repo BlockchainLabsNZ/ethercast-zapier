@@ -1,4 +1,4 @@
-const logs = require('./triggers/logs');
+const logsTrigger = require('./triggers/logs');
 const subscription = require('./creates/subscription');
 
 const { authentication, addBearerHeader } = require('./authentication');
@@ -21,7 +21,8 @@ const App = {
 
   // If you want your trigger to show up, you better include it here!
   triggers: {
-    logs
+    mainnetLogs: logsTrigger('mainnet','https://api.ethercast.io'),
+    kovanLogs: logsTrigger('kovan','https://kovan.api.ethercast.io')
   },
 
   // If you want your searches to show up, you better include it here!
