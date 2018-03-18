@@ -1,6 +1,6 @@
 const toTitleCase = require('../util/to-title-case');
-const parseFilter = require('../util/parse-filter');
 const getInputFields = require('../util/get-input-fields');
+const createInputDataFilter = require('../util/create-input-data-filters');
 
 module.exports = function createTrigger(network, apiUrl, type) {
   const subscribeHook = (z, bundle) => {
@@ -9,17 +9,7 @@ module.exports = function createTrigger(network, apiUrl, type) {
       description: `Subscription created by Zapier with ID ${bundle.meta.zap.id}`,
       webhookUrl: bundle.targetUrl,
       type,
-      filters: type === 'log' ? {
-        address: parseFilter(bundle.inputData.address),
-        topic0: parseFilter(bundle.inputData.topic0),
-        topic1: parseFilter(bundle.inputData.topic1),
-        topic2: parseFilter(bundle.inputData.topic2),
-        topic3: parseFilter(bundle.inputData.topic3)
-      } : {
-        from: parseFilter(bundle.inputData.from),
-        to: parseFilter(bundle.inputData.to),
-        methodSignature: parseFilter(bundle.inputData.methodSignature)
-      }
+      filters: createInputDataFilter(type, bundle.inputData)
     };
 
     const options = {
@@ -75,9 +65,7 @@ module.exports = function createTrigger(network, apiUrl, type) {
       },
       body: z.JSON.stringify({
         type: 'log',
-        filters: {
-          address: bundle.inputData.address.split(',').map(s => s.trim())
-        }
+        filters: createInputDataFilter(type, bundle.inputData)
       })
     };
 

@@ -1,5 +1,6 @@
 const toTitleCase = require('../util/to-title-case');
 const getInputFields = require('../util/get-input-fields');
+const createInputDataFilter = require('../util/create-input-data-filters');
 
 module.exports = function createSubscriptionCreate(network, apiUrl, type) {
 
@@ -35,17 +36,7 @@ module.exports = function createSubscriptionCreate(network, apiUrl, type) {
           description: `Subscription created by Zapier`,
           webhookUrl: bundle.inputData.webhookUrl,
           type,
-          filters: type === 'log' ? {
-            address: parseFilter(bundle.inputData.address),
-            topic0: parseFilter(bundle.inputData.topic0),
-            topic1: parseFilter(bundle.inputData.topic1),
-            topic2: parseFilter(bundle.inputData.topic2),
-            topic3: parseFilter(bundle.inputData.topic3)
-          } : {
-            from: parseFilter(bundle.inputData.from),
-            to: parseFilter(bundle.inputData.to),
-            methodSignature: parseFilter(bundle.inputData.methodSignature)
-          }
+          filters: createInputDataFilter(type, bundle.inputData)
         };
 
         const options = {
