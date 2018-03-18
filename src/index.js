@@ -1,5 +1,4 @@
-const logsTrigger = require('./triggers/logs');
-const subscription = require('./creates/subscription');
+const createTrigger = require('./triggers/create-trigger');
 
 const { authentication, addBearerHeader } = require('./authentication');
 
@@ -21,8 +20,10 @@ const App = {
 
   // If you want your trigger to show up, you better include it here!
   triggers: {
-    mainnetLogs: logsTrigger('mainnet', 'https://api.ethercast.io'),
-    kovanLogs: logsTrigger('kovan', 'https://kovan.api.ethercast.io')
+    mainnetLogs: createTrigger('mainnet', 'https://api.ethercast.io', 'log'),
+    mainnetTransaction: createTrigger('mainnet', 'https://api.ethercast.io', 'transaction'),
+    kovanLogs: createTrigger('kovan', 'https://kovan.api.ethercast.io', 'log'),
+    kovanTransaction: createTrigger('kovan', 'https://kovan.api.ethercast.io', 'transaction')
   },
 
   // If you want your searches to show up, you better include it here!

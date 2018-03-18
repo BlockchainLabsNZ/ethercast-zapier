@@ -1,19 +1,77 @@
 const toTitleCase = require('../util/to-title-case');
 const parseFilter = require('../util/parse-filter');
 
-module.exports = function logsTrigger(network, apiUrl) {
+const LOG_FILTERS = [
+  {
+    key: 'address',
+    required: false,
+    label: 'Contract Address',
+    helpText: 'A comma delimited list of contract addresses to filter on'
+  },
+  {
+    key: 'topic0',
+    required: false,
+    label: 'Log Event Signature',
+    helpText: 'A comma delimited list of event signatures to filter on'
+  },
+  {
+    key: 'topic1',
+    required: false,
+    label: 'First Argument',
+    helpText: 'A comma delimited list of first indexed arguments to filter on'
+  },
+  {
+    key: 'topic2',
+    required: false,
+    label: 'Second Argument',
+    helpText: 'A comma delimited list of second indexed arguments to filter on'
+  },
+  {
+    key: 'topic3',
+    required: false,
+    label: 'Third Argument',
+    helpText: 'A comma delimited list of third indexed arguments to filter on'
+  }
+];
+
+const TRANSACTION_FILTERS = [
+  {
+    key: 'from',
+    required: false,
+    label: 'From Address',
+    helpText: 'A comma delimited list of addresses from which transactions that can trigger this hook are sent'
+  },
+  {
+    key: 'to',
+    required: false,
+    label: 'To Address',
+    helpText: 'A comma delimited list of addresses to which transactions that can trigger this hook are sent'
+  },
+  {
+    key: 'methodSignature',
+    required: false,
+    label: 'Method Signature',
+    helpText: 'A comma delimited list of transaction method signatures that can trigger this hook'
+  }
+];
+
+module.exports = function createTrigger(network, apiUrl, type) {
   const subscribeHook = (z, bundle) => {
     const subscription = {
       name: bundle.inputData.name,
       description: `Webhook created by Zapier with ID ${bundle.meta.zap.id}`,
       webhookUrl: bundle.targetUrl,
-      type: 'log',
-      filters: {
+      type,
+      filters: type === 'log' ? {
         address: parseFilter(bundle.inputData.address),
         topic0: parseFilter(bundle.inputData.topic0),
         topic1: parseFilter(bundle.inputData.topic1),
         topic2: parseFilter(bundle.inputData.topic2),
         topic3: parseFilter(bundle.inputData.topic3)
+      } : {
+        from: parseFilter(bundle.inputData.from),
+        to: parseFilter(bundle.inputData.to),
+        methodSignature: parseFilter(bundle.inputData.methodSignature)
       }
     };
 
@@ -87,13 +145,13 @@ module.exports = function logsTrigger(network, apiUrl) {
 
 
   return {
-    key: `${network}Logs`, // uniquely identifies the trigger
-    noun: 'Log', // user-friendly word that is used to refer to the resource
+    key: `${network}${toTitleCase(type)}`, // uniquely identifies the trigger
+    noun: toTitleCase(type), // user-friendly word that is used to refer to the resource
 
     // `display` controls the presentation in the Zapier Editor
     display: {
-      label: `${toTitleCase(network)} Ethereum Contract Log Emitted`,
-      description: `Triggers when logs are emitted by an Ethereum smart contract on the ${toTitleCase(network)} network.`
+      label: `${toTitleCase(network)} ${toTitleCase(type)}`,
+      description: `Triggers when a ${type} is found in a new block on the ${toTitleCase(network)} network.`
     },
 
     // `operation` implements the API call used to fetch the data
@@ -106,38 +164,8 @@ module.exports = function logsTrigger(network, apiUrl) {
           required: true,
           label: 'Name of the subscription',
           helpText: 'Name your subscription!'
-        },
-        {
-          key: 'address',
-          required: true,
-          label: 'Contract Address',
-          helpText: 'A comma delimited list of contract addresses to filter on'
-        },
-        {
-          key: 'topic0',
-          required: false,
-          label: 'Log Event Signature',
-          helpText: 'A comma delimited list of event signatures to filter on'
-        },
-        {
-          key: 'topic1',
-          required: false,
-          label: 'First Argument',
-          helpText: 'A comma delimited list of first indexed arguments to filter on'
-        },
-        {
-          key: 'topic2',
-          required: false,
-          label: 'Second Argument',
-          helpText: 'A comma delimited list of second indexed arguments to filter on'
-        },
-        {
-          key: 'topic3',
-          required: false,
-          label: 'Third Argument',
-          helpText: 'A comma delimited list of third indexed arguments to filter on'
         }
-      ],
+      ].concat(type === 'log' ? LOG_FILTERS : TRANSACTION_FILTERS),
 
       outputFields: [
         { key: 'id', label: 'ID' }
@@ -149,7 +177,7 @@ module.exports = function logsTrigger(network, apiUrl) {
       performSubscribe: subscribeHook,
       performUnsubscribe: unsubscribeHook,
       sample: {
-        transactionHash: '0x0'
+        required: 'for no reason'
       }
     }
   };
