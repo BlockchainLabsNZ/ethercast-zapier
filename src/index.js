@@ -1,6 +1,14 @@
+const _ = require('underscore');
 const createTrigger = require('./triggers/create-trigger');
 
 const { authentication, addBearerHeader } = require('./authentication');
+
+const triggers = [
+  createTrigger('mainnet', 'https://api.ethercast.io', 'log'),
+  createTrigger('mainnet', 'https://api.ethercast.io', 'transaction'),
+  createTrigger('kovan', 'https://kovan.api.ethercast.io', 'log'),
+  createTrigger('kovan', 'https://kovan.api.ethercast.io', 'transaction')
+];
 
 // We can roll up all our behaviors in an App.
 const App = {
@@ -19,12 +27,7 @@ const App = {
   resources: {},
 
   // If you want your trigger to show up, you better include it here!
-  triggers: {
-    mainnetLogs: createTrigger('mainnet', 'https://api.ethercast.io', 'log'),
-    mainnetTransaction: createTrigger('mainnet', 'https://api.ethercast.io', 'transaction'),
-    kovanLogs: createTrigger('kovan', 'https://kovan.api.ethercast.io', 'log'),
-    kovanTransaction: createTrigger('kovan', 'https://kovan.api.ethercast.io', 'transaction')
-  },
+  triggers: _.indexBy(triggers, 'key'),
 
   // If you want your searches to show up, you better include it here!
   searches: {},

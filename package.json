@@ -17,6 +17,7 @@
     "npm": ">=3.10.10"
   },
   "dependencies": {
+    "underscore": "^1.8.3",
     "zapier-platform-core": "5.0.0"
   },
   "devDependencies": {
