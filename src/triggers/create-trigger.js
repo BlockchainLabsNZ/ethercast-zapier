@@ -70,6 +70,15 @@ module.exports = function createTrigger(network, apiUrl, type) {
     };
 
     return z.request(options)
+      .then(
+        response => {
+          if (response.status !== 200) {
+            throw new Error(`Unexpected status code: ${response.status}`);
+          }
+
+          return response;
+        }
+      )
       .then((response) => ([ response.json ]));
   };
 
