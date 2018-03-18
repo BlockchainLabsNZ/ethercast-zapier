@@ -1,14 +1,30 @@
 const _ = require('underscore');
 const createTrigger = require('./triggers/create-trigger');
+const createSubscriptionCreate = require('./creates/create-subscription-create');
 
 const { authentication, addBearerHeader } = require('./authentication');
 
-const triggers = [
-  createTrigger('mainnet', 'https://api.ethercast.io', 'log'),
-  createTrigger('mainnet', 'https://api.ethercast.io', 'transaction'),
-  createTrigger('kovan', 'https://kovan.api.ethercast.io', 'log'),
-  createTrigger('kovan', 'https://kovan.api.ethercast.io', 'transaction')
+const NETWORKS = [
+  { name: 'mainnet', apiUrl: 'https://api.ethercast.io' },
+  { name: 'kovan', apiUrl: 'https://kovan.api.ethercast.io' }
 ];
+
+const TYPES = [
+  'log',
+  'transaction'
+];
+
+function forEachCombo(action) {
+  return _.flatten(
+    _.map(
+      NETWORKS,
+      ({ name, apiUrl }) => _.map(TYPES, type => action(name, apiUrl, type))
+    )
+  );
+}
+
+const triggers = forEachCombo(createTrigger);
+const creates = forEachCombo(createSubscriptionCreate);
 
 // We can roll up all our behaviors in an App.
 const App = {
@@ -33,7 +49,7 @@ const App = {
   searches: {},
 
   // If you want your creates to show up, you better include it here!
-  creates: {}
+  creates: _.indexBy(creates, 'key')
 };
 
 // Finally, export the app.
