@@ -3,25 +3,36 @@ const parseFilter = require('../util/parse-filter');
 
 module.exports = function logsTrigger(network, apiUrl) {
   const subscribeHook = (z, bundle) => {
+    const subscription = {
+      name: bundle.inputData.name,
+      description: `Webhook created by Zapier with ID ${bundle.meta.zap.id}`,
+      webhookUrl: bundle.targetUrl,
+      type: 'log',
+      filters: {
+        address: parseFilter(bundle.inputData.address),
+        topic0: parseFilter(bundle.inputData.topic0),
+        topic1: parseFilter(bundle.inputData.topic1),
+        topic2: parseFilter(bundle.inputData.topic2),
+        topic3: parseFilter(bundle.inputData.topic3)
+      }
+    };
+
     const options = {
       url: `${apiUrl}/subscriptions`,
       method: 'POST',
-      body: z.JSON.stringify({
-        name: bundle.inputData.name,
-        description: `Webhook created by Zapier with ID ${bundle.meta.zap.id}`,
-        webhookUrl: bundle.inputData.targetUrl,
-        filters: {
-          address: parseFilter(bundle.inputData.address),
-          topic0: parseFilter(bundle.inputData.topic0),
-          topic1: parseFilter(bundle.inputData.topic1),
-          topic2: parseFilter(bundle.inputData.topic2),
-          topic3: parseFilter(bundle.inputData.topic3)
-        }
-      })
+      body: z.JSON.stringify(subscription)
     };
 
     return z.request(options)
-      .then((response) => response.json);
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json;
+        } else {
+          z.console.log('failed to create subscription', JSON.stringify(subscription), JSON.stringify(response.json));
+
+          throw new Error(`Unexpected status code ${response.status}`);
+        }
+      });
   };
 
   const unsubscribeHook = (z, bundle) => {
@@ -38,7 +49,15 @@ module.exports = function logsTrigger(network, apiUrl) {
 
     // You may return a promise or a normal data structure from any perform method.
     return z.request(options)
-      .then((response) => response.json);
+      .then((response) => {
+        if (response.status === 204) {
+          return;
+        }
+
+        z.console.log('failed to unsubscribe', response);
+
+        throw new Error(`Unexpected status code: ${response.status}`);
+      });
   };
 
   const getExampleLogs = (z, bundle) => {
