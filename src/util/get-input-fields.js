@@ -1,54 +1,76 @@
+const _ = require('underscore');
+
+const ZERO_ADDRESS = `0x${_.range(0, 40).map(() => '0').join('')}`;
+const ZERO_SIGNATURE = `0x${_.range(0, 8).map(() => '0').join('')}`;
+const ZERO_TOPIC = `0x${_.range(0, 64).map(() => '0').join('')}`;
+
 const LOG_FILTERS = [
   {
     key: 'address',
+    placeholder: ZERO_ADDRESS,
+    list: true,
     required: false,
     label: 'Contract Address',
-    helpText: 'A comma delimited list of contract addresses to filter on'
+    helpText: 'A list of contract addresses to filter on'
   },
   {
     key: 'topic0',
+    placeholder: ZERO_TOPIC,
+    list: true,
     required: false,
     label: 'Log Event Signature',
-    helpText: 'A comma delimited list of event signatures to filter on'
+    helpText: 'A list of event signatures to filter on'
   },
   {
     key: 'topic1',
+    placeholder: ZERO_TOPIC,
+    list: true,
     required: false,
     label: 'First Argument',
-    helpText: 'A comma delimited list of first indexed arguments to filter on'
+    helpText: 'A list of first indexed arguments to filter on'
   },
   {
     key: 'topic2',
+    placeholder: ZERO_TOPIC,
+    list: true,
     required: false,
     label: 'Second Argument',
-    helpText: 'A comma delimited list of second indexed arguments to filter on'
+    helpText: 'A list of second indexed arguments to filter on'
   },
   {
     key: 'topic3',
+    placeholder: ZERO_TOPIC,
+    list: true,
     required: false,
     label: 'Third Argument',
-    helpText: 'A comma delimited list of third indexed arguments to filter on'
+    helpText: 'A list of third indexed arguments to filter on'
   }
 ];
 
 const TRANSACTION_FILTERS = [
   {
     key: 'from',
+    placeholder: ZERO_ADDRESS,
+    list: true,
     required: false,
     label: 'From Address',
-    helpText: 'A comma delimited list of addresses from which transactions that can trigger this hook are sent'
+    helpText: 'A list of addresses from which transactions that can trigger this hook are sent'
   },
   {
     key: 'to',
+    placeholder: ZERO_ADDRESS,
+    list: true,
     required: false,
     label: 'To Address',
-    helpText: 'A comma delimited list of addresses to which transactions that can trigger this hook are sent'
+    helpText: 'A list of addresses to which transactions that can trigger this hook are sent'
   },
   {
     key: 'methodSignature',
+    placeholder: ZERO_SIGNATURE,
+    list: true,
     required: false,
     label: 'Method Signature',
-    helpText: 'A comma delimited list of transaction method signatures that can trigger this hook'
+    helpText: 'A list of transaction method signatures that can trigger this hook'
   }
 ];
 

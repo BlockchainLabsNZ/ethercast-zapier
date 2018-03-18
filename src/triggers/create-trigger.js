@@ -1,6 +1,8 @@
 const toTitleCase = require('../util/to-title-case');
 const getInputFields = require('../util/get-input-fields');
+const getOutputFields = require('../util/get-output-fields');
 const createInputDataFilter = require('../util/create-input-data-filters');
+const { EMPTY_LOG, EMPTY_TRANSACTION } = require('../util/examples');
 
 module.exports = function createTrigger(network, apiUrl, type) {
   const subscribeHook = (z, bundle) => {
@@ -23,9 +25,9 @@ module.exports = function createTrigger(network, apiUrl, type) {
         if (response.status === 200) {
           return response.json;
         } else {
-          z.console.log('failed to create subscription', JSON.stringify(subscription), JSON.stringify(response.json));
+          z.console.error('failed to create subscription', JSON.stringify(subscription), JSON.stringify(response.json));
 
-          throw new Error(`Unexpected status code ${response.status}`);
+          throw new Error(response.json.message);
         }
       });
   };
@@ -49,9 +51,9 @@ module.exports = function createTrigger(network, apiUrl, type) {
           return;
         }
 
-        z.console.log('failed to unsubscribe', response);
+        z.console.error('failed to unsubscribe', response);
 
-        throw new Error(`Unexpected status code: ${response.status}`);
+        throw new Error(response.json.message);
       });
   };
 
@@ -73,13 +75,14 @@ module.exports = function createTrigger(network, apiUrl, type) {
       .then(
         response => {
           if (response.status !== 200) {
-            throw new Error(`Unexpected status code: ${response.status}`);
+            z.console.error('failed to get example', options);
+
+            throw new Error(response.json.message);
           }
 
-          return response;
+          return [ response.json ];
         }
-      )
-      .then((response) => ([ response.json ]));
+      );
   };
 
 
@@ -104,18 +107,15 @@ module.exports = function createTrigger(network, apiUrl, type) {
 
       inputFields: getInputFields(type),
 
-      outputFields: [
-        { key: 'id', label: 'ID' }
-      ],
+      outputFields: getOutputFields(type),
 
       perform: parseIncomingLog,
       performList: getExampleLogs,
 
       performSubscribe: subscribeHook,
       performUnsubscribe: unsubscribeHook,
-      sample: {
-        required: 'for no reason'
-      }
+
+      sample: type === 'log' ? EMPTY_LOG : EMPTY_TRANSACTION
     }
   };
 };
