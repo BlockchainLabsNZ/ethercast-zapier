@@ -64,7 +64,7 @@ module.exports = function createTrigger(network, apiUrl, type) {
         'Content-Type': 'application/json'
       },
       body: z.JSON.stringify({
-        type: 'log',
+        type,
         filters: createInputDataFilter(type, bundle.inputData)
       })
     };
