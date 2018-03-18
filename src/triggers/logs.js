@@ -1,4 +1,5 @@
 const toTitleCase = require('../util/to-title-case');
+const parseFilter = require('../util/parse-filter');
 
 module.exports = function logsTrigger(network, apiUrl) {
   const subscribeHook = (z, bundle) => {
@@ -6,8 +7,16 @@ module.exports = function logsTrigger(network, apiUrl) {
       url: `${apiUrl}/subscriptions`,
       method: 'POST',
       body: z.JSON.stringify({
-        name: bundle.inputFields.name,
-        webhookUrl: bundle.targetUrl
+        name: bundle.inputData.name,
+        description: `Webhook created by Zapier with ID ${bundle.meta.zap.id}`,
+        webhookUrl: bundle.inputData.targetUrl,
+        filters: {
+          address: parseFilter(bundle.inputData.address),
+          topic0: parseFilter(bundle.inputData.topic0),
+          topic1: parseFilter(bundle.inputData.topic1),
+          topic2: parseFilter(bundle.inputData.topic2),
+          topic3: parseFilter(bundle.inputData.topic3)
+        }
       })
     };
 
@@ -34,7 +43,7 @@ module.exports = function logsTrigger(network, apiUrl) {
 
   const getExampleLogs = (z, bundle) => {
     // For the test poll, you should get some real data, to aid the setup process.
-    const options = z.JSON.stringify({
+    const options = {
       url: `${apiUrl}/get-examples`,
       method: 'POST',
       headers: {
@@ -46,7 +55,7 @@ module.exports = function logsTrigger(network, apiUrl) {
           address: bundle.inputData.address.split(',').map(s => s.trim())
         }
       })
-    });
+    };
 
     return z.request(options)
       .then((response) => ([ response.json ]));
