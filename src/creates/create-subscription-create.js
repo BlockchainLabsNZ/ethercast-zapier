@@ -18,14 +18,14 @@ module.exports = function createSubscriptionCreate(network, apiUrl, type) {
         {
           key: 'name',
           required: true,
-          label: 'Name of the subscription',
-          helpText: 'Name your subscription!'
+          label: 'Name',
+          helpText: 'Name of the subscription to be created'
         },
         {
           key: 'webhookUrl',
           required: true,
           label: 'Webhook URL',
-          helpText: 'The webhook URL for the newly created Ethercast subscription'
+          helpText: 'The webhook URL to which events for this subscription should be sent'
         }
       ].concat(getInputFields(type)),
 
