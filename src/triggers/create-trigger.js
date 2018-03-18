@@ -5,8 +5,8 @@ const getInputFields = require('../util/get-input-fields');
 module.exports = function createTrigger(network, apiUrl, type) {
   const subscribeHook = (z, bundle) => {
     const subscription = {
-      name: bundle.inputData.name,
-      description: `Webhook created by Zapier with ID ${bundle.meta.zap.id}`,
+      name: `Zapier ${bundle.meta.zap.id}`,
+      description: `Subscription created by Zapier with ID ${bundle.meta.zap.id}`,
       webhookUrl: bundle.targetUrl,
       type,
       filters: type === 'log' ? {
@@ -93,7 +93,7 @@ module.exports = function createTrigger(network, apiUrl, type) {
 
   return {
     key: `${network}${toTitleCase(type)}`, // uniquely identifies the trigger
-    noun: toTitleCase(type), // user-friendly word that is used to refer to the resource
+    noun: `${toTitleCase(type)} Subscription`, // user-friendly word that is used to refer to the resource
 
     // `display` controls the presentation in the Zapier Editor
     display: {

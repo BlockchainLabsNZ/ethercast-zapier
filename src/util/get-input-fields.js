@@ -53,12 +53,5 @@ const TRANSACTION_FILTERS = [
 ];
 
 module.exports = function getInputFields(type) {
-  return [
-    {
-      key: 'name',
-      required: true,
-      label: 'Name of the subscription',
-      helpText: 'Name your subscription!'
-    }
-  ].concat(type === 'log' ? LOG_FILTERS : TRANSACTION_FILTERS);
+  return type === 'log' ? LOG_FILTERS : TRANSACTION_FILTERS;
 };

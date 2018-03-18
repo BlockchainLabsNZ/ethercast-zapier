@@ -16,6 +16,12 @@ module.exports = function createSubscriptionCreate(network, apiUrl, type) {
     operation: {
       inputFields: [
         {
+          key: 'name',
+          required: true,
+          label: 'Name of the subscription',
+          helpText: 'Name your subscription!'
+        },
+        {
           key: 'webhookUrl',
           required: true,
           label: 'Webhook URL',
